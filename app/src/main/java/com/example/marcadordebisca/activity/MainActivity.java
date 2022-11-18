@@ -18,6 +18,7 @@ import com.example.marcadordebisca.databinding.ActivityTelaInicialBinding;
 import com.example.marcadordebisca.model.Jogadores;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Jogadores> listaJogadores;
     private TextInputEditText editJogador;
     private Integer qtdJogadores;
+    private Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +36,17 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Spinner spinner = binding.spinner;
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                qtdJogadores = pos+3;
-                carregarRecycleView(qtdJogadores);
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        Bundle dados = getIntent().getExtras();
+        ArrayList<Jogadores> listaJogadores = (ArrayList<Jogadores>) dados.getSerializable("listaJogadores");
+        carregarRecycleView(listaJogadores);
     }
 
-    public void carregarRecycleView(int count){
+
+
+    public void carregarRecycleView(ArrayList<Jogadores> listaJogadores){
         rv = binding.recyclerView;
         //configurar Adapter
-        Adapter adapter = new Adapter(getApplicationContext(), count, listaJogadores);
+        adapter = new Adapter(getApplicationContext(), listaJogadores);
 
         //configurar RecyclerView
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -58,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void zerarGame(View view){
-
         binding.textRodadaNum.setText("1");
     }
 

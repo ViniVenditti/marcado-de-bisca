@@ -21,15 +21,13 @@ import java.util.Objects;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
-    private int count;
     private List<Jogadores> listJogadores;
     private boolean isOnTextChanged = false;
 
     Context context;
 
-    public Adapter(Context context, int count, List<Jogadores> listJogadores){
+    public Adapter(Context context, List<Jogadores> listJogadores){
         this.context = context;
-        this.count = count;
         this.listJogadores = listJogadores;
     }
 
@@ -44,40 +42,43 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.editFez.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        holder.editFaz.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if(!b){
-                    try{
-                        int pontos = Integer.parseInt(holder.textPontos.getText().toString());
-                        int faz = Integer.parseInt(Objects.requireNonNull(holder.editFaz.getText()).toString());
-                        int fez = Integer.parseInt(Objects.requireNonNull(holder.editFez.getText()).toString());
-                        int resultado = faz == fez ? pontos + fez + 10 : pontos + fez;
-                        holder.textPontos.setText(String.valueOf(resultado));
-                        Toast.makeText(context, "Faz = "+ faz+ "**  fez = "+fez + " pontos: " + pontos, Toast.LENGTH_LONG).show();
-                    }catch (Exception e){
-                        Toast.makeText(context, "Preencha todos os campos", Toast.LENGTH_LONG).show();
-                    }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                listJogadores.get(holder.getAdapterPosition()).setDoing(Integer.valueOf(holder.editFaz.getText().toString()));
+            }
+        });
 
-                }
+        holder.editFez.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                listJogadores.get(holder.getAdapterPosition()).setDone(Integer.valueOf(holder.editFez.getText().toString()));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return count;
+        return listJogadores.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextInputEditText editJogador, editFaz, editFez;
-        TextView textPontos;
+        TextInputEditText editFaz, editFez;
+        TextView textPlayer, textPontos;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            editJogador = itemView.findViewById(R.id.editJogador);
+            textPlayer = itemView.findViewById(R.id.textPlayer);
             editFaz = itemView.findViewById(R.id.editFaz);
             editFez = itemView.findViewById(R.id.editFez);
             textPontos = itemView.findViewById(R.id.textPontos);

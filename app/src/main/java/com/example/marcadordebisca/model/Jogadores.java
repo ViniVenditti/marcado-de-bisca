@@ -1,6 +1,8 @@
 package com.example.marcadordebisca.model;
 
-public class Jogadores {
+import java.io.Serializable;
+
+public class Jogadores implements Serializable {
     private String name;
     private Integer doing;
     private Integer done;
@@ -21,7 +23,7 @@ public class Jogadores {
         this.name = name;
     }
 
-    public Integer getDoing() {
+    public Integer getDoing(Integer integer) {
         return doing;
     }
 
